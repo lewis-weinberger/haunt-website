@@ -1,7 +1,7 @@
-title: Astrophysics research part III
-date: 2018-03-13 18:00
-tags: astrophysics
-summary: My research
+title: Lyman-alpha emitting galaxies (part III)
+date: 2018-03-13 20:00
+tags: research
+summary: 
 ---
 
 Third paper
