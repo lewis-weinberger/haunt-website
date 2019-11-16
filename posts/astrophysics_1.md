@@ -11,3 +11,6 @@ summary:
 **Journal**: Monthly Notices of the Royal Astronomical Society, Volume 479, Issue 2, September 2018, Pages 2564–2587
 
 **DOI**: [https://doi.org/10.1093/mnras/sty1563](https://doi.org/10.1093/mnras/sty1563)
+
+
+![galaxy](images/galaxy_256x256.png)

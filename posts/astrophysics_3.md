@@ -11,3 +11,7 @@ summary:
 **Journal**: Monthly Notices of the Royal Astronomical Society, accepted
 
 **DOI**: [https://doi.org/10.1093/mnras/stz3083](https://doi.org/10.1093/mnras/stz3083)
+
+
+
+![galaxy](images/galaxy_256x256.png)

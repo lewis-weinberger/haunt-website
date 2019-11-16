@@ -37,7 +37,8 @@
 	    research-posts
 	    misc-posts
 	    centered-image
-	    commonmark-reader*))
+	    commonmark-reader*
+	    date))
 
 
 ;;; HTML utilities ---------------------------------------------------
@@ -51,7 +52,7 @@
 
 (define (nav-button name uri)
   "Create a navigation button with NAME, that points to URI."
-  `(a (@ (class "w3-bar-item w3-button w3-light-grey w3-mobile")
+  `(a (@ (class "w3-bar-item w3-button w3-text-black w3-mobile w3-large")
 	 (href ,uri))
       ,name))
 
@@ -169,31 +170,34 @@
 	      ,(external-stylesheet "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
 	      ,(external-stylesheet "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css")
 	      ,(external-stylesheet "https://fonts.googleapis.com/css?family=Raleway")
-	      (style "body, h1, h2 {font-family: 'Raleway', Arial, sans-serif}")
+	      (style "body, h1, h2 {font-family: 'Raleway', Arial, sans-serif;height: 100%;}")
 	      (script "MathJax = { tex: {inlineMath: [['$', '$']]} };")
               (script (@ (id "MathJax-script")
 			 (src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"))))
 
 	     ;; Body
-             (body 
+             (body
 
+	     (header (@ (style "background: #9e9e9e; margin-bottom:80px;"))
 	     (div (@ (class "w3-container")
-	             (style "text-align: justify; margin-bottom:80px; margin-left:auto; margin-right:auto; max-width:800px"))
+	             (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
 		  ;; Header with navigation buttons
-		  (div (@ (class "w3-panel w3-opacity w3-light-grey")
-		  	(style "padding:50px 16px"))
-		      (div (@ (class "w3-bar"))
+		  (div (@ (class "w3-panel w3-opacity"))
+		      (div (@ (class "w3-bar w3-light-grey"))
 		      ,(nav-button "Home" "/index.html")
 		      ,(nav-button "About" "/about.html")
 		      ,(nav-button "Research" "/research.html")
-		      ,(nav-button "Miscellany" "/misc.html")))
+		      ,(nav-button "Miscellany" "/misc.html")))))
 
+	     (div (@ (class "w3-container")
+	             (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
 		  ;; Main body of page
 		  ,body)
                        
              ;; Footer
-	     (div (@ (class "w3-container w3-padding-64 w3-light-grey w3-center w3-xxlarge")
-		     (style "margin-top:20px; margin-left:auto; margin-right:auto; max-width:800px;"))
+	     (footer (@ (style "background: #9e9e9e; height: 100%; min-height:100%; margin-top:80px;")) 
+	     (div (@ (class "w3-container w3-center w3-xxlarge")
+		     (style "margin-left:auto; margin-right:auto; max-width:800px;"))
 		  (p ,%github-button
 		     ,%bitbucket-button
 		     ,%linkedin-button
@@ -212,7 +216,7 @@
 		     (br)
                      "Powered by the "
                      ,(link "w3.css" "https://www.w3schools.com/w3css/default.asp") 
-                     " framework.")))))
+                     " framework."))))))
          #:post-template
          (lambda (post)
            `((h1 (@ (class "title"))
@@ -264,14 +268,20 @@
 		     (code ,source))]
 	      [,other other]))
 
-;; Covert hrefs to custom hoverable link
+;; Convert hrefs to custom hoverable link
 (define (hover-link . tree)
   (sxml-match tree
 	      [(a (@ (href ,uri) . ,_) . ,name) `(,(link name uri))]))
 
+;; Center all images
+(define (center-images . tree)
+  (sxml-match tree
+	      [(img (@ (src ,uri) . ,_)) `(,(centered-image uri))]))
+
 (define %commonmark-rules
   `((code . ,code-block)
     (a . ,hover-link)
+    (img . ,center-images)
     (*text* . ,(lambda (tag str) str))
     (*default* . ,sxml-identity)))
 

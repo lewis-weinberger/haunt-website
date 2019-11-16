@@ -18,7 +18,6 @@
 (use-modules (haunt builder blog)
              (haunt builder assets)
              (haunt post)
-             (haunt reader commonmark)
              (haunt site)
 	     (haunt config)
 	     (useful))
@@ -28,7 +27,10 @@
         (static-page
          "Home"
          "index.html"
-	 `(,(centered-image "images/mainframe_256x256.gif"))))
+	 `((p (@ (class "w3-xlarge")
+		 (style "margin-top:0; text-align: center;"))
+	      "Hello!")
+	   ,(centered-image "images/mainframe_256x256.gif"))))
 
 ;; Static "About" page
 (define about-page
@@ -40,18 +42,17 @@
 	      "I am currently an astrophysics PhD student at the University of "
 	      "Cambridge's "
 	      ,(link "Institute of Astronomy" "https://www.ast.cam.ac.uk/")
-	      ". My research has focused on the "
-	      "inter-galactic medium (IGM), which is the stuff "
+	      ". My research so far has focused on the "
+	      "inter-galactic medium (IGM) — the stuff "
 	      (i "in-between")
-	      " galaxies "
-	      "(no, it's not just vacuum), in particular how this medium evolved"
-	      "alongside galaxies in the early Universe."
-	      " Outside of my PhD work, I'm a big fan of computers (all computers, "
-	      "great and small)... A lot of my research makes use of High "
+	      " galaxies — in particular how this medium evolved"
+	      " alongside galaxies in the early Universe."
+	      " A lot of my research makes use of High "
 	      "Performance Computing (HPC), running calculations on "
               ,(link "supercomputers" "https://www.hpc.cam.ac.uk/")
-	      ", but I also enjoy learning about programming languages "
-	      "and paradigms outside of scientific computing.")
+	      ". Outside of my PhD work, I'm a computerphile — "
+	      "I enjoy learning about and using programming languages "
+	      "and paradigms beyond scientific computing.")
            (br)
 	   ,(centered-image "images/profile.png")
 	   (br)
@@ -59,15 +60,15 @@
               ,(version)
 	      ") and built with the Haunt library (version "
 	      ,%haunt-version
-	      "). Under the hood it was heavily inspired by the websites "
-	      ,(link "dthompson.us" "https://dthompson.us/")
-	      " and "
-	      ,(link "hpc.guix.info" "https://hpc.guix.info/")
+	      ") on "
+	      ,(strftime "%c" (localtime (current-time)))
 	      ". The source code can be found on "
-	      ,(link "GitHub" "https://github.com/lewis-weinberger/haunt-website")	 
+	      ,(link "GitHub" "https://github.com/lewis-weinberger/haunt-website")
+	      ". Under the hood it was heavily inspired by David Thompson's website "
+	      ,(link "dthompson.us" "https://dthompson.us/")
 	      ".")
 	   (br)
-	   ,(centered-image "images/github_profile.png")
+	   ,(centered-image "images/logo_256x256.gif")
            (br)
 	   (h2 "Contact Info")
 	   (p (i (@ (class "fa fa-envelope fa-fw")))

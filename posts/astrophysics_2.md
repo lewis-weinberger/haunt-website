@@ -11,3 +11,7 @@ summary:
 **Journal**: Monthly Notices of the Royal Astronomical Society, Volume 485, Issue 1, May 2019, Pages 1350–1366
 
 **DOI**: [https://doi.org/10.1093/mnras/stz481](https://doi.org/10.1093/mnras/stz481)
+
+
+
+![galaxy](images/galaxy_256x256.png)
