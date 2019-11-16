@@ -37,14 +37,27 @@
          "about.html"
          `((h1 "About")
 	   (p "This is the personal website of Lewis Weinberger. "
-	      "I am a computerphile and astrophysics PhD student. "
-	      "MORE INFORMATION HERE!")
+	      "I am currently an astrophysics PhD student at the University of "
+	      "Cambridge's "
+	      ,(link "Institute of Astronomy" "https://www.ast.cam.ac.uk/")
+	      ". My research has focused on the "
+	      "inter-galactic medium (IGM), which is the stuff "
+	      (i "in-between")
+	      " galaxies "
+	      "(no, it's not just vacuum), in particular how this medium evolved"
+	      "alongside galaxies in the early Universe."
+	      " Outside of my PhD work, I'm a big fan of computers (all computers, "
+	      "great and small)... A lot of my research makes use of High "
+	      "Performance Computing (HPC), running calculations on "
+              ,(link "supercomputers" "https://www.hpc.cam.ac.uk/")
+	      ", but I also enjoy learning about programming languages "
+	      "and paradigms outside of scientific computing.")
            (br)
 	   ,(centered-image "images/profile.png")
 	   (br)
-	   (p "This site was written in Guile Scheme (version "
+	   (p "This site was written in the LISP dialect Scheme (GNU Guile, version "
               ,(version)
-	      ") and built with Haunt (version "
+	      ") and built with the Haunt library (version "
 	      ,%haunt-version
 	      "). Under the hood it was heavily inspired by the websites "
 	      ,(link "dthompson.us" "https://dthompson.us/")
@@ -62,9 +75,9 @@
 	      (i (@ (class "fa fa-at")))
 	      "ast.cam.ac.uk"))))
 
-;; Collection of all blog posts
-(define %allposts
-  `(("Recent Posts" "misc.html" ,posts/reverse-chronological)))
+;; Collection of miscellaneous posts
+(define %misc
+  `(("Recent Posts" "misc.html" ,misc-posts)))
 
 ;; Collection of research-related posts
 (define %research
@@ -76,8 +89,8 @@
       #:default-metadata
       '((author . "Lewis Weinberger")
         (email  . "lhw28@cam.ac.uk"))
-      #:readers (list commonmark-reader)
-      #:builders (list (blog #:theme default-theme #:collections %allposts)
+      #:readers (list commonmark-reader*)
+      #:builders (list (blog #:theme default-theme #:collections %misc)
 		       (blog #:theme default-theme #:collections %research)
 		       home-page
 		       about-page

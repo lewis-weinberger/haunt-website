@@ -1,6 +1,6 @@
 title: Rusticisms
-date: 2018-03-13 18:00
-tags: Rust
+date: 2019-06-25 11:00
+tags: misc
 summary: Rust jokes
 ---
 

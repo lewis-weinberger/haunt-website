@@ -17,6 +17,7 @@
 
 (define-module (useful)
   #:use-module (haunt html)
+  #:use-module (haunt reader)
   #:use-module (haunt utils)
   #:use-module (haunt asset)
   #:use-module (haunt builder blog)
@@ -27,11 +28,16 @@
   #:use-module (srfi srfi-19)
   #:use-module (web uri)
   #:use-module (ice-9 match)
+  #:use-module (sxml match)
+  #:use-module (sxml transform)
+  #:use-module (commonmark)
   #:export (link
 	    default-theme
 	    static-page
 	    research-posts
-	    centered-image))
+	    misc-posts
+	    centered-image
+	    commonmark-reader*))
 
 
 ;;; HTML utilities ---------------------------------------------------
@@ -129,12 +135,20 @@
 	  (contains? (drop l 1) m))))
 
 (define (research? post)
-  "Check if POST has `research' as a tag."
+  "Check if POST has a research tag."
   (contains? (post-ref post 'tags) "research"))
+
+(define (misc? post)
+  "Check if POST has a misc tag."
+  (contains? (post-ref post 'tags) "misc"))
 
 (define (research-posts posts)
   "Returns POSTS that contain research tag in reverse chronological order."
   (posts/reverse-chronological (filter research? posts)))
+
+(define (misc-posts posts)
+  "Returns POSTS that contain misc tag in reverse chronological order."
+  (posts/reverse-chronological (filter misc? posts)))
 
 
 ;;; Website layout ---------------------------------------------------
@@ -155,7 +169,10 @@
 	      ,(external-stylesheet "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
 	      ,(external-stylesheet "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css")
 	      ,(external-stylesheet "https://fonts.googleapis.com/css?family=Raleway")
-	      (style "body, h1, h2 {font-family: 'Raleway', Arial, sans-serif}"))
+	      (style "body, h1, h2 {font-family: 'Raleway', Arial, sans-serif}")
+	      (script "MathJax = { tex: {inlineMath: [['$', '$']]} };")
+              (script (@ (id "MathJax-script")
+			 (src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"))))
 
 	     ;; Body
              (body 
@@ -217,14 +234,13 @@
                                                (site-post-slug site post)
                                                ".html")))
                        `(div (@ (class "summary"))
-                             (h2 (a (@ (href ,uri))
-                                    ,(post-ref post 'title)))
+                             (h2 (a ,(link (post-ref post 'title) uri )))
                              (div (@ (class "date"))
                                   ,(date->string (post-date post)
                                                  "~B ~d, ~Y"))
                              (div (@ (class "post"))
                                   ,(first-paragraph post))
-                             (a (@ (href ,uri)) "read more..."))))
+                             ,(link "read more..." uri))))
                    posts)))))
 
 (define (static-page title file-name body)
@@ -233,3 +249,40 @@
     (make-page file-name
 	       (with-layout default-theme site title body)
 	       sxml->html)))
+
+
+;;; Custom markdown reader --------------------------------------------------
+
+
+(define (sxml-identity . args) args)
+
+;; Put code in a nice blue box
+(define (code-block . tree)
+  (sxml-match tree
+              [(code ,source)
+               `(div (@ (class "w3-container w3-border w3-pale-blue"))
+		     (code ,source))]
+	      [,other other]))
+
+;; Covert hrefs to custom hoverable link
+(define (hover-link . tree)
+  (sxml-match tree
+	      [(a (@ (href ,uri) . ,_) . ,name) `(,(link name uri))]))
+
+(define %commonmark-rules
+  `((code . ,code-block)
+    (a . ,hover-link)
+    (*text* . ,(lambda (tag str) str))
+    (*default* . ,sxml-identity)))
+
+(define (post-process-commonmark sxml)
+  (pre-post-order sxml %commonmark-rules))
+
+(define commonmark-reader*
+  (make-reader (make-file-extension-matcher "md")
+               (lambda (file)
+                 (call-with-input-file file
+                   (lambda (port)
+                     (values (read-metadata-headers port)
+                             (post-process-commonmark
+                              (commonmark->sxml port))))))))
