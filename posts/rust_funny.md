@@ -4,7 +4,7 @@ tags: misc
 summary: Rust jokes
 ---
 
-A collection of humorous [Rust](https://www.rust-lang.org/) witticisms, sadly none of which I can claim credit for creating*:
+A small collection of [Rust-lang](https://www.rust-lang.org/) jokes, sadly none of which I can claim credit for creating*:
 
 ```
 Failure is not an Option<T>, it's a Result<T,E>.

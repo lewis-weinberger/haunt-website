@@ -238,7 +238,10 @@
                                                (site-post-slug site post)
                                                ".html")))
                        `(div (@ (class "summary"))
-                             (h2 (a ,(link (post-ref post 'title) uri )))
+                             (h2 (a (@ (href ,uri)
+				       (style "text-decoration: none;")
+				       (class "w3-text-blue-gray"))
+				    ,(post-ref post 'title)))
                              (div (@ (class "date"))
                                   ,(date->string (post-date post)
                                                  "~B ~d, ~Y"))
@@ -263,9 +266,10 @@
 ;; Put code in a nice blue box
 (define (code-block . tree)
   (sxml-match tree
-              [(code ,source)
-               `(div (@ (class "w3-container w3-border w3-pale-blue"))
-		     (code ,source))]
+              [(pre (code ,source))
+               `(div (@ (class "w3-container w3-border w3-padding-16 w3-pale-blue"))
+		     (pre (@ (style "overflow: auto"))
+			  (code ,source)))]
 	      [,other other]))
 
 ;; Convert hrefs to custom hoverable link
@@ -279,7 +283,7 @@
 	      [(img (@ (src ,uri) . ,_)) `(,(centered-image uri))]))
 
 (define %commonmark-rules
-  `((code . ,code-block)
+  `((pre . ,code-block)
     (a . ,hover-link)
     (img . ,center-images)
     (*text* . ,(lambda (tag str) str))
