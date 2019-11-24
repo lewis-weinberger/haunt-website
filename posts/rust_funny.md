@@ -4,7 +4,7 @@ tags: misc
 summary: Rust jokes
 ---
 
-A small collection of [Rust-lang](https://www.rust-lang.org/) jokes, sadly none of which I can claim credit for creating*:
+A small collection of [Rust-lang](https://www.rust-lang.org/) jokes, mostly found in *Quote of the Week* on [users.rust-lang.org](https://users.rust-lang.org/t/twir-quote-of-the-week/).
 
 ```
 Failure is not an Option<T>, it's a Result<T,E>.
@@ -14,5 +14,4 @@ In Rust, None is always an Option<_>.
 Rust iterators are the best thing since &Bread[..].
 ```
 
-*see [here](https://users.rust-lang.org/t/twir-quote-of-the-week/) for more pearls of witticism.
-
+I will add more to the collection as I find them!

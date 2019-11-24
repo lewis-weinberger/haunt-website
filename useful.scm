@@ -14,7 +14,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
-
 (define-module (useful)
   #:use-module (haunt html)
   #:use-module (haunt reader)
@@ -31,29 +30,26 @@
   #:use-module (sxml match)
   #:use-module (sxml transform)
   #:use-module (commonmark)
-  #:export (link
+  #:export (link*
 	    default-theme
-	    static-page
-	    research-posts
-	    misc-posts
-	    centered-image
-	    commonmark-reader*
-	    date))
-
+            static-page
+            research-posts
+            misc-posts
+            centered-image
+            commonmark-reader*
+            date))
 
 ;;; HTML utilities ---------------------------------------------------
 
-
-(define (link name uri)
+(define (link* name uri)
   "Create a link with NAME to url URI."
-  `(a (@ (href ,uri)
-	 (class "w3-hover-opacity"))
+  `(a (@ (href ,uri) (class "w3-hover-opacity"))
       ,name))
 
 (define (nav-button name uri)
   "Create a navigation button with NAME, that points to URI."
   `(a (@ (class "w3-bar-item w3-button w3-text-black w3-mobile w3-large")
-	 (href ,uri))
+         (href ,uri))
       ,name))
 
 (define (stylesheet name)
@@ -63,15 +59,14 @@
 
 (define (external-stylesheet uri)
   "Use an external stylesheet from URI."
-  `(link (@ (rel "stylesheet")
-            (href ,uri))))
+  `(link (@ (rel "stylesheet") (href ,uri))))
 
 ;; CC button
 (define %cc-by-sa-button
   '(a (@ (class "cc-button")
          (href "https://creativecommons.org/licenses/by-sa/4.0/"))
       (img (@ (src "https://licensebuttons.net/l/by-sa/4.0/80x15.png")
-	      (class "w3-hover-opacity")))))
+              (class "w3-hover-opacity")))))
 
 ;; Github button
 (define %github-button
@@ -106,34 +101,33 @@
 (define (centered-image image)
   "Create a centered image from source IMAGE."
   `((div (@ (class "w3-container w3-center")
-		   (style "text-align: center"))
-		(img (@ (src ,image))))))
-
+            (style "text-align: center"))
+         (img (@ (src ,image))))))
 
 ;;; Post processing utilities ----------------------------------------
 
-
 (define (date year month day)
   "Create a SRFI-19 date for the given YEAR, MONTH, DAY"
-  (let ((tzoffset (tm:gmtoff (localtime (time-second (current-time))))))
+  (let ((tzoffset
+          (tm:gmtoff
+            (localtime (time-second (current-time))))))
     (make-date 0 0 0 0 day month year tzoffset)))
 
 (define (first-paragraph post)
   "Extract the first paragraph from POST."
-  (let loop ((sxml (post-sxml post))
-             (result '()))
+  (let loop ((sxml (post-sxml post)) (result '()))
     (match sxml
-      (() (reverse result))
-      ((or (('p ...) _ ...) (paragraph _ ...))
-       (reverse (cons paragraph result)))
-      ((head . tail)
-       (loop tail (cons head result))))))
+           (() (reverse result))
+           ((or (('p ...) _ ...) (paragraph _ ...))
+            (reverse (cons paragraph result)))
+           ((head . tail) (loop tail (cons head result))))))
 
 (define (contains? l m)
   "Check if LIST contains MEMBER."
-  (if (null? l) #f
-      (or (equal? (first l) m)
-	  (contains? (drop l 1) m))))
+  (if (null? l)
+    #f
+    (or (equal? (first l) m)
+        (contains? (drop l 1) m))))
 
 (define (research? post)
   "Check if POST has a research tag."
@@ -145,158 +139,170 @@
 
 (define (research-posts posts)
   "Returns POSTS that contain research tag in reverse chronological order."
-  (posts/reverse-chronological (filter research? posts)))
+  (posts/reverse-chronological
+    (filter research? posts)))
 
 (define (misc-posts posts)
   "Returns POSTS that contain misc tag in reverse chronological order."
-  (posts/reverse-chronological (filter misc? posts)))
-
+  (posts/reverse-chronological
+    (filter misc? posts)))
 
 ;;; Website layout ---------------------------------------------------
 
-
 (define default-theme
-  (theme #:name "default-theme"
-	 #:layout
-	 (lambda (site title body)
-	   `((doctype "html")
+  (theme #:name
+         "default-theme"
+         #:layout
+         (lambda (site title body)
+           `((doctype "html")
 
-             ;; Head
-	     (head
-	      (meta (@ (charset "utf-8")))
-	      (meta (@ (name "viewport") (content "width=device-width, initial-scale=1")))
-	      (title ,(string-append title " — " (site-title site)))
-              ,(external-stylesheet "https://www.w3schools.com/w3css/4/w3.css")
-	      ,(external-stylesheet "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
-	      ,(external-stylesheet "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css")
-	      ,(external-stylesheet "https://fonts.googleapis.com/css?family=Raleway")
-	      (style "body, h1, h2 {font-family: 'Raleway', Arial, sans-serif;height: 100%;}")
-	      (script "MathJax = { tex: {inlineMath: [['$', '$']]} };")
-              (script (@ (id "MathJax-script")
-			 (src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"))))
+	     ;; HTML header
+             (head (meta (@ (charset "utf-8")))
+                   (meta (@ (name "viewport")
+                            (content "width=device-width, initial-scale=1")))
+                   (title ,(string-append
+                             title
+                             " — "
+                             (site-title site)))
+                   ,(external-stylesheet
+                      "https://www.w3schools.com/w3css/4/w3.css")
+                   ,(external-stylesheet
+                      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
+                   ,(external-stylesheet
+                      "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css")
+                   ,(external-stylesheet
+                      "https://fonts.googleapis.com/css?family=Raleway")
+                   (style "body, h1, h2, h3 {font-family: 'Raleway', Arial, sans-serif;height: 100%;}")
+                   (script
+                     "MathJax = { tex: {inlineMath: [['$', '$']]} };")
+                   (script
+                     (@ (id "MathJax-script")
+                        (src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"))))
 
-	     ;; Body
-             (body
+	     ;; HTML body
+             (body (header
+                     (@ (style "background: #9e9e9e; margin-bottom:80px;"))
+                     (div (@ (class "w3-container")
+                             (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
+                          (div (@ (class "w3-panel w3-opacity"))
+                               (div (@ (class "w3-bar w3-light-grey"))
+                                    ,(nav-button "Home" "/index.html")
+                                    ,(nav-button "About" "/about.html")
+                                    ,(nav-button "Research" "/research.html")
+                                    ,(nav-button "Miscellany" "/misc.html")))))
+                   (div (@ (class "w3-container")
+                           (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
+                        ,body)
 
-	     (header (@ (style "background: #9e9e9e; margin-bottom:80px;"))
-	     (div (@ (class "w3-container")
-	             (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
-		  ;; Header with navigation buttons
-		  (div (@ (class "w3-panel w3-opacity"))
-		      (div (@ (class "w3-bar w3-light-grey"))
-		      ,(nav-button "Home" "/index.html")
-		      ,(nav-button "About" "/about.html")
-		      ,(nav-button "Research" "/research.html")
-		      ,(nav-button "Miscellany" "/misc.html")))))
-
-	     (div (@ (class "w3-container")
-	             (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
-		  ;; Main body of page
-		  ,body)
-                       
-             ;; Footer
-	     (footer (@ (style "background: #9e9e9e; height: 100%; min-height:100%; margin-top:80px;")) 
-	     (div (@ (class "w3-container w3-center w3-xxlarge")
-		     (style "margin-left:auto; margin-right:auto; max-width:800px;"))
-		  (p ,%github-button
-		     ,%bitbucket-button
-		     ,%linkedin-button
-		     ,%orcid-button
-		     ,%arxiv-button
-		     ,%ads-button)
-                  (p (@ (class "w3-small"))
-		     "© 2019 Lewis Weinberger "
-                     ,%cc-by-sa-button
-		     (br)
-                     "This website is built with "
-                     ,(link "Haunt" "http://haunt.dthompson.us")
-                     ", a static site generator written in "
-		     ,(link "Guile Scheme" "https://gnu.org/software/guile")
-		     "."
-		     (br)
-                     "Powered by the "
-                     ,(link "w3.css" "https://www.w3schools.com/w3css/default.asp") 
-                     " framework."))))))
+		   ;; HTML footer
+                   (footer
+                     (@ (style "background: #9e9e9e; height: 100%; min-height:100%; margin-top:80px;"))
+                     (div (@ (class "w3-container w3-center w3-xxlarge")
+                             (style "margin-left:auto; margin-right:auto; max-width:800px;"))
+                          (p ,%github-button
+                             ,%bitbucket-button
+                             ,%linkedin-button
+                             ,%orcid-button
+                             ,%arxiv-button
+                             ,%ads-button)
+                          (p (@ (class "w3-small"))
+                             "© 2019 Lewis Weinberger "
+                             ,%cc-by-sa-button
+                             (br)
+                             "This website is built with "
+                             ,(link* "Haunt" "http://haunt.dthompson.us")
+                             ", a static site generator written in "
+                             ,(link* "Guile Scheme"
+                                    "https://gnu.org/software/guile")
+                             "."
+                             (br)
+                             "Powered by the "
+                             ,(link* "w3.css"
+                                    "https://www.w3schools.com/w3css/default.asp")
+                             " framework."))))))
          #:post-template
          (lambda (post)
-           `((h1 (@ (class "title"))
-		 ,(post-ref post 'title))
+           `((h1 (@ (class "title")) ,(post-ref post 'title))
              (div (@ (class "date"))
-                  ,(date->string (post-date post)
-                                 "~B ~d, ~Y"))
-             (div (@ (class "post"))
-                  ,(post-sxml post))))
+                  ,(date->string (post-date post) "~B ~d, ~Y"))
+             (div (@ (class "post")) ,(post-sxml post))))
          #:collection-template
          (lambda (site title posts prefix)
            (define (post-uri post)
-             (string-append "/" (or prefix "")
-                            (site-post-slug site post) ".html"))
- 
+             (string-append
+               "/"
+               (or prefix "")
+               (site-post-slug site post)
+               ".html"))
            `((h1 ,title)
              ,(map (lambda (post)
-                     (let ((uri (string-append "/"
-                                               (site-post-slug site post)
-                                               ".html")))
+                     (let ((uri (string-append
+                                  "/"
+                                  (site-post-slug site post)
+                                  ".html")))
                        `(div (@ (class "summary"))
                              (h2 (a (@ (href ,uri)
-				       (style "text-decoration: none;")
-				       (class "w3-text-blue-gray"))
-				    ,(post-ref post 'title)))
+                                       (style "text-decoration: none;")
+                                       (class "w3-text-blue-gray"))
+                                    ,(post-ref post 'title)))
                              (div (@ (class "date"))
-                                  ,(date->string (post-date post)
-                                                 "~B ~d, ~Y"))
-                             (div (@ (class "post"))
-                                  ,(first-paragraph post))
-                             ,(link "read more..." uri))))
+                                  ,(date->string (post-date post) "~B ~d, ~Y"))
+                             (div (@ (class "post")) ,(first-paragraph post))
+                             ,(link* "read more..." uri))))
                    posts)))))
 
 (define (static-page title file-name body)
   "Create a static page with TITLE at html file FILENAME using page BODY."
   (lambda (site posts)
-    (make-page file-name
-	       (with-layout default-theme site title body)
-	       sxml->html)))
-
+    (make-page
+      file-name
+      (with-layout default-theme site title body)
+      sxml->html)))
 
 ;;; Custom markdown reader --------------------------------------------------
-
 
 (define (sxml-identity . args) args)
 
 ;; Put code in a nice blue box
 (define (code-block . tree)
-  (sxml-match tree
-              [(pre (code ,source))
-               `(div (@ (class "w3-container w3-border w3-padding-16 w3-pale-blue"))
-		     (pre (@ (style "overflow: auto"))
-			  (code ,source)))]
-	      [,other other]))
+  (sxml-match
+    tree
+    ((pre (code ,source))
+     `(div (@ (class "w3-container w3-border w3-padding-16 w3-pale-blue"))
+           (pre (@ (style "overflow: auto")) (code ,source))))
+    (,other other)))
 
 ;; Convert hrefs to custom hoverable link
 (define (hover-link . tree)
-  (sxml-match tree
-	      [(a (@ (href ,uri) . ,_) . ,name) `(,(link name uri))]))
+  (sxml-match
+    tree
+    ((a (@ (href ,uri) unquote _) unquote name)
+     `(,(link* name uri)))))
 
 ;; Center all images
 (define (center-images . tree)
-  (sxml-match tree
-	      [(img (@ (src ,uri) . ,_)) `(,(centered-image uri))]))
+  (sxml-match
+    tree
+    ((img (@ (src ,uri) unquote _))
+     `(,(centered-image uri)))))
 
 (define %commonmark-rules
-  `((pre . ,code-block)
-    (a . ,hover-link)
-    (img . ,center-images)
-    (*text* . ,(lambda (tag str) str))
-    (*default* . ,sxml-identity)))
+  `((pre unquote code-block)
+    (a unquote hover-link)
+    (img unquote center-images)
+    (*text* unquote (lambda (tag str) str))
+    (*default* unquote sxml-identity)))
 
 (define (post-process-commonmark sxml)
   (pre-post-order sxml %commonmark-rules))
 
 (define commonmark-reader*
-  (make-reader (make-file-extension-matcher "md")
-               (lambda (file)
-                 (call-with-input-file file
-                   (lambda (port)
-                     (values (read-metadata-headers port)
-                             (post-process-commonmark
-                              (commonmark->sxml port))))))))
+  (make-reader
+    (make-file-extension-matcher "md")
+    (lambda (file)
+      (call-with-input-file
+        file
+        (lambda (port)
+          (values
+            (read-metadata-headers port)
+            (post-process-commonmark (commonmark->sxml port))))))))

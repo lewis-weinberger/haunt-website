@@ -19,62 +19,67 @@
              (haunt builder assets)
              (haunt post)
              (haunt site)
-	     (haunt config)
-	     (useful))
+             (haunt config)
+             (useful))
 
 ;; Static "Home"
 (define home-page
-        (static-page
-         "Home"
-         "index.html"
-	 `((p (@ (class "w3-xlarge")
-		 (style "margin-top:0; text-align: center;"))
-	      "Hello!")
-	   ,(centered-image "images/mainframe_256x256.gif"))))
+  (static-page
+    "Home"
+    "index.html"
+    `((p (@ (class "w3-xlarge")
+            (style "margin-top:0; text-align: center;"))
+         "Hello!")
+      ,(centered-image "images/mainframe_256x256.gif"))))
 
 ;; Static "About" page
 (define about-page
-        (static-page
-         "About"
-         "about.html"
-         `((h1 "About")
-	   (p "This is the personal website of Lewis Weinberger. "
-	      "I am currently an astrophysics PhD student at the University of "
-	      "Cambridge's "
-	      ,(link "Institute of Astronomy" "https://www.ast.cam.ac.uk/")
-	      ". My research so far has focused on the "
-	      "inter-galactic medium (IGM) — the stuff "
-	      (i "in-between")
-	      " galaxies — in particular how this medium evolved"
-	      " alongside galaxies in the early Universe."
-	      " A lot of my research makes use of High "
-	      "Performance Computing (HPC), running calculations on "
-              ,(link "supercomputers" "https://www.hpc.cam.ac.uk/")
-	      ". Outside of my PhD work, I'm a computerphile — "
-	      "I enjoy learning about and using programming languages "
-	      "and paradigms beyond scientific computing.")
-           (br)
-	   ,(centered-image "images/profile.png")
-	   (br)
-	   (p "This site was written in the LISP dialect Scheme (GNU Guile, version "
-              ,(version)
-	      ") and built with the Haunt library (version "
-	      ,%haunt-version
-	      ") on "
-	      ,(strftime "%c" (localtime (current-time)))
-	      ". The source code can be found on "
-	      ,(link "GitHub" "https://github.com/lewis-weinberger/haunt-website")
-	      ". Under the hood it was heavily inspired by David Thompson's website "
-	      ,(link "dthompson.us" "https://dthompson.us/")
-	      ".")
-	   (br)
-	   ,(centered-image "images/logo_256x256.gif")
-           (br)
-	   (h2 "Contact Info")
-	   (p (i (@ (class "fa fa-envelope fa-fw")))
-	      " lewis.weinberger"
-	      (i (@ (class "fa fa-at")))
-	      "ast.cam.ac.uk"))))
+  (static-page
+    "About"
+    "about.html"
+    `((h1 "About")
+      (p "This is the personal website of Lewis Weinberger."
+         " I am currently an astrophysics PhD student at the University of "
+         "Cambridge's "
+         ,(link* "Institute of Astronomy"
+                "https://www.ast.cam.ac.uk/")
+         ". My research so far has focused on the "
+         "inter-galactic medium (IGM) — the stuff "
+         (i "in-between")
+         " galaxies — in particular how this medium evolved"
+         " alongside galaxies in the early Universe."
+         " A lot of my research makes use of High "
+         "Performance Computing (HPC), running calculations on "
+         ,(link* "supercomputers"
+                "https://www.hpc.cam.ac.uk/")
+         ". Outside of my PhD work, I'm a computerphile — "
+         "I enjoy learning about and using programming languages "
+         "and paradigms beyond scientific computing. (Pronouns: "
+         (i "he, him, his")
+	 ").")
+      (br)
+      ,(centered-image "images/profile.png")
+      (br)
+      (p "This site was written in the LISP dialect Scheme (GNU Guile, version "
+         ,(version)
+         ") and built with the Haunt library (version "
+         ,%haunt-version
+         ") on "
+         ,(strftime "%c" (localtime (current-time)))
+         ". The source code can be found on "
+         ,(link* "GitHub"
+                "https://github.com/lewis-weinberger/haunt-website")
+         ". Under the hood it was heavily inspired by David Thompson's website "
+         ,(link* "dthompson.us" "https://dthompson.us/")
+         ".")
+      (br)
+      ,(centered-image "images/logo_256x256.gif")
+      (br)
+      (h2 "Contact Info")
+      (p (i (@ (class "fa fa-envelope fa-fw")))
+         " lewis.weinberger"
+         (i (@ (class "fa fa-at")))
+         "ast.cam.ac.uk"))))
 
 ;; Collection of miscellaneous posts
 (define %misc
@@ -82,17 +87,26 @@
 
 ;; Collection of research-related posts
 (define %research
-  `(("Published Work" "research.html" ,research-posts)))
+  `(("Published Work"
+     "research.html"
+     ,research-posts)))
 
 ;; Build site
-(site #:title "Lewis Weinberger's Homepage"
-      #:domain "lewis-weinberger.github.io"
+(site #:title
+      "Lewis Weinberger's Homepage"
+      #:domain
+      "lewis-weinberger.github.io"
       #:default-metadata
       '((author . "Lewis Weinberger")
-        (email  . "lhw28@cam.ac.uk"))
-      #:readers (list commonmark-reader*)
-      #:builders (list (blog #:theme default-theme #:collections %misc)
-		       (blog #:theme default-theme #:collections %research)
-		       home-page
-		       about-page
-                       (static-directory "images")))
+        (email . "lhw28@cam.ac.uk"))
+      #:readers
+      (list commonmark-reader*)
+      #:builders
+      (list (blog #:theme default-theme #:collections %misc)
+            (blog #:theme
+                  default-theme
+                  #:collections
+                  %research)
+            home-page
+            about-page
+            (static-directory "images")))
