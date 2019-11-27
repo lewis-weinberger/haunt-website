@@ -14,6 +14,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program.  If not, see
 ;;; <http://www.gnu.org/licenses/>.
+
 (define-module (useful)
   #:use-module (haunt html)
   #:use-module (haunt reader)
@@ -155,8 +156,6 @@
          #:layout
          (lambda (site title body)
            `((doctype "html")
-
-	     ;; HTML header
              (head (meta (@ (charset "utf-8")))
                    (meta (@ (name "viewport")
                             (content "width=device-width, initial-scale=1")))
@@ -172,54 +171,55 @@
                       "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css")
                    ,(external-stylesheet
                       "https://fonts.googleapis.com/css?family=Raleway")
-                   (style "body, h1, h2, h3 {font-family: 'Raleway', Arial, sans-serif;height: 100%;}")
+                   (style "html, body, h1, h2, h3 {font-family: 'Raleway', Arial, sans-serif;height: 100%; height:100%; padding:0}")
                    (script
                      "MathJax = { tex: {inlineMath: [['$', '$']]} };")
                    (script
                      (@ (id "MathJax-script")
                         (src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"))))
-
-	     ;; HTML body
-             (body (header
-                     (@ (style "background: #9e9e9e; margin-bottom:80px;"))
-                     (div (@ (class "w3-container")
-                             (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
-                          (div (@ (class "w3-panel w3-opacity"))
-                               (div (@ (class "w3-bar w3-light-grey"))
-                                    ,(nav-button "Home" "/index.html")
-                                    ,(nav-button "About" "/about.html")
-                                    ,(nav-button "Research" "/research.html")
-                                    ,(nav-button "Miscellany" "/misc.html")))))
-                   (div (@ (class "w3-container")
-                           (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
-                        ,body)
-
-		   ;; HTML footer
-                   (footer
-                     (@ (style "background: #9e9e9e; height: 100%; min-height:100%; margin-top:80px;"))
-                     (div (@ (class "w3-container w3-center w3-xxlarge")
-                             (style "margin-left:auto; margin-right:auto; max-width:800px;"))
-                          (p ,%github-button
-                             ,%bitbucket-button
-                             ,%linkedin-button
-                             ,%orcid-button
-                             ,%arxiv-button
-                             ,%ads-button)
-                          (p (@ (class "w3-small"))
-                             "© 2019 Lewis Weinberger "
-                             ,%cc-by-sa-button
-                             (br)
-                             "This website is built with "
-                             ,(link* "Haunt" "http://haunt.dthompson.us")
-                             ", a static site generator written in "
-                             ,(link* "Guile Scheme"
-                                    "https://gnu.org/software/guile")
-                             "."
-                             (br)
-                             "Powered by the "
-                             ,(link* "w3.css"
-                                    "https://www.w3schools.com/w3css/default.asp")
-                             " framework."))))))
+             (body (div (@ (style "min-height: 100%; position:relative"))
+                        (header
+                          (@ (style "background: #9e9e9e; margin-bottom:80px;"))
+                          (div (@ (class "w3-container")
+                                  (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
+                               (div (@ (class "w3-panel w3-opacity"))
+                                    (div (@ (class "w3-bar w3-light-grey"))
+                                         ,(nav-button "Home" "/index.html")
+                                         ,(nav-button "About" "/about.html")
+                                         ,(nav-button
+                                            "Research"
+                                            "/research.html")
+                                         ,(nav-button
+                                            "Miscellany"
+                                            "/misc.html")))))
+                        (div (@ (class "w3-container")
+                                (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px; padding-bottom: 280px;"))
+                             ,body)
+                        (footer
+                          (@ (style "background: #9e9e9e; position:absolute; bottom:0; width:100%; height:200px;"))
+                          (div (@ (class "w3-container w3-center w3-xxlarge")
+                                  (style "margin-left:auto; margin-right:auto; max-width:800px;"))
+                               (p ,%github-button
+                                  ,%bitbucket-button
+                                  ,%linkedin-button
+                                  ,%orcid-button
+                                  ,%arxiv-button
+                                  ,%ads-button)
+                               (p (@ (class "w3-small"))
+                                  "© 2019 Lewis Weinberger "
+                                  ,%cc-by-sa-button
+                                  (br)
+                                  "This website is built with "
+                                  ,(link* "Haunt" "http://haunt.dthompson.us")
+                                  ", a static site generator written in "
+                                  ,(link* "Guile Scheme"
+                                          "https://gnu.org/software/guile")
+                                  "."
+                                  (br)
+                                  "Powered by the "
+                                  ,(link* "w3.css"
+                                          "https://www.w3schools.com/w3css/default.asp")
+                                  " framework.")))))))
          #:post-template
          (lambda (post)
            `((h1 (@ (class "title")) ,(post-ref post 'title))
