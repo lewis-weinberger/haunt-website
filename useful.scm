@@ -67,7 +67,7 @@
   '(a (@ (class "cc-button")
          (href "https://creativecommons.org/licenses/by-sa/4.0/"))
       (img (@ (src "https://licensebuttons.net/l/by-sa/4.0/80x15.png")
-              (class "w3-hover-opacity")))))
+              (class "w3-hover-opacity w3-hover-white")))))
 
 ;; Github button
 (define %github-button
@@ -163,6 +163,7 @@
                              title
                              " — "
                              (site-title site)))
+                   ,(stylesheet "default")
                    ,(external-stylesheet
                       "https://www.w3schools.com/w3css/4/w3.css")
                    ,(external-stylesheet
@@ -170,18 +171,17 @@
                    ,(external-stylesheet
                       "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css")
                    ,(external-stylesheet
-                      "https://fonts.googleapis.com/css?family=Raleway")
-                   (style "html, body, h1, h2, h3 {font-family: 'Raleway', Arial, sans-serif;height: 100%; height:100%; padding:0}")
+		     "https://fonts.googleapis.com/css?family=Raleway")
+		   (style "body, h1, h2, h3 {font-family: 'Raleway', Arial, sans-serif;}")
                    (script
                      "MathJax = { tex: {inlineMath: [['$', '$']]} };")
                    (script
                      (@ (id "MathJax-script")
                         (src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"))))
-             (body (div (@ (style "min-height: 100%; position:relative"))
+             (body (div (@ (id "container"))
                         (header
-                          (@ (style "background: #9e9e9e; margin-bottom:80px;"))
                           (div (@ (class "w3-container")
-                                  (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px"))
+                                  (id "block"))
                                (div (@ (class "w3-panel w3-opacity"))
                                     (div (@ (class "w3-bar w3-light-grey"))
                                          ,(nav-button "Home" "/index.html")
@@ -192,26 +192,28 @@
                                          ,(nav-button
                                             "Miscellany"
                                             "/misc.html")))))
-                        (div (@ (class "w3-container")
-                                (style "text-align: justify; margin-left:auto; margin-right:auto; max-width:800px; padding-bottom: 280px;"))
+                        (div (@ (class "w3-container body")
+                                (id "block"))
                              ,body)
                         (footer
-                          (@ (style "background: #9e9e9e; position:absolute; bottom:0; width:100%; height:200px;"))
-                          (div (@ (class "w3-container w3-center w3-xxlarge")
-                                  (style "margin-left:auto; margin-right:auto; max-width:800px;"))
-                               (p ,%github-button
-                                  ,%bitbucket-button
-                                  ,%linkedin-button
-                                  ,%orcid-button
-                                  ,%arxiv-button
-                                  ,%ads-button)
+                          (div (@ (class "w3-container w3-center w3-xxlarge footer")
+                                  (id "block"))
+                               (div (@ (class "w3-show-inline-block"))
+				    (div (@ (class "w3-bar w3-mobile"))
+					 ,%github-button
+					 ,%bitbucket-button
+					 ,%linkedin-button)
+				    (div (@ (class "w3-bar w3-mobile"))
+					 ,%orcid-button
+					 ,%arxiv-button
+					 ,%ads-button))
                                (p (@ (class "w3-small"))
                                   "© 2019 Lewis Weinberger "
                                   ,%cc-by-sa-button
                                   (br)
                                   "This website is built with "
                                   ,(link* "Haunt" "http://haunt.dthompson.us")
-                                  ", a static site generator written in "
+                                          ", a static site generator written in "
                                   ,(link* "Guile Scheme"
                                           "https://gnu.org/software/guile")
                                   "."

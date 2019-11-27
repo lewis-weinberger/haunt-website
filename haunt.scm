@@ -109,4 +109,5 @@
                   %research)
             home-page
             about-page
+	    (static-directory "css")
             (static-directory "images")))
