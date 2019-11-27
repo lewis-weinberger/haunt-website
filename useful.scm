@@ -270,7 +270,8 @@
   (sxml-match
     tree
     ((pre (code ,source))
-     `(div (@ (class "w3-container w3-border w3-padding-16 w3-pale-blue"))
+     `(div (@ (class "w3-container w3-border w3-padding-16")
+	      (id "code"))
            (pre (@ (style "overflow: auto")) (code ,source))))
     (,other other)))
 
