@@ -1,5 +1,5 @@
 ;;; -*- coding: utf-8 -*-
-;;; Copyright © 2019 Lewis Weinberger <lhw28@cam.ac.uk>
+;;; Copyright © 2020 Lewis Weinberger <lhw28@cam.ac.uk>
 ;;;
 ;;; This program is free software; you can redistribute it and/or
 ;;; modify it under the terms of the GNU General Public License as
@@ -32,7 +32,7 @@
   #:use-module (sxml transform)
   #:use-module (commonmark)
   #:export (link*
-	    default-theme
+            default-theme
             static-page
             research-posts
             misc-posts
@@ -44,66 +44,16 @@
 
 (define (link* name uri)
   "Create a link with NAME to url URI."
-  `(a (@ (href ,uri) (class "w3-hover-opacity"))
-      ,name))
-
-(define (nav-button name uri)
-  "Create a navigation button with NAME, that points to URI."
-  `(a (@ (class "w3-bar-item w3-button w3-text-black w3-mobile w3-large")
-         (href ,uri))
-      ,name))
+  `("[" (a (@ (href ,uri)) ,name) "]"))
 
 (define (stylesheet name)
   "Use the stylesheet NAME.css saved locally in css/."
   `(link (@ (rel "stylesheet")
             (href ,(string-append "/css/" name ".css")))))
 
-(define (external-stylesheet uri)
-  "Use an external stylesheet from URI."
-  `(link (@ (rel "stylesheet") (href ,uri))))
-
-;; CC button
-(define %cc-by-sa-button
-  '(a (@ (class "cc-button")
-         (href "https://creativecommons.org/licenses/by-sa/4.0/"))
-      (img (@ (src "https://licensebuttons.net/l/by-sa/4.0/80x15.png")
-              (class "w3-hover-opacity w3-hover-white")))))
-
-;; Github button
-(define %github-button
-  '(a (@ (href "https://github.com/lewis-weinberger"))
-      (i (@ (class "fa fa-github w3-hover-opacity w3-padding-small")))))
-
-;; Bitbucket button
-(define %bitbucket-button
-  '(a (@ (href "https://bitbucket.org/lweinberger/"))
-      (i (@ (class "fa fa-bitbucket w3-hover-opacity w3-padding-small")))))
-
-;; LinkedIn button
-(define %linkedin-button
-  '(a (@ (href "https://www.linkedin.com/in/lewis-weinberger-119923194"))
-      (i (@ (class "fa fa-linkedin w3-hover-opacity w3-padding-small")))))
-
-;; ORC-ID button
-(define %orcid-button
-  '(a (@ (href "https://orcid.org/0000-0002-7312-4595"))
-      (i (@ (class "ai ai-orcid w3-hover-opacity w3-padding-small")))))
-
-;; Arxiv button
-(define %arxiv-button
-  '(a (@ (href "https://arxiv.org/search/?searchtype=author&query=Weinberger%2C+L+H"))
-      (i (@ (class "ai ai-arxiv w3-hover-opacity w3-padding-small")))))
-
-;; ADS button
-(define %ads-button
-  '(a (@ (href "https://ui.adsabs.harvard.edu/search/q=author%3A%22Weinberger%2C%20Lewis%20H.%22"))
-      (i (@ (class "ai ai-ads w3-hover-opacity w3-padding-small")))))
-
 (define (centered-image image)
   "Create a centered image from source IMAGE."
-  `((div (@ (class "w3-container w3-center")
-            (style "text-align: center"))
-         (img (@ (src ,image))))))
+  `((div (@ (style "text-align: center")) (img (@ (src ,image))))))
 
 ;;; Post processing utilities ----------------------------------------
 
@@ -148,7 +98,59 @@
   (posts/reverse-chronological
     (filter misc? posts)))
 
+;;; Links ------------------------------------------------------------
+
+(define (github)
+  (link* "Github" "https://github.com/lewis-weinberger"))
+
+(define (bitbucket)
+  (link* "BitBucket" "https://bitbucket.org/lweinberger/"))
+
+(define (linkedin)
+  (link* "LinkedIn" "https://www.linkedin.com/in/lewis-weinberger-119923194"))
+
+(define (orcid)
+  (link* "ORCID" "https://orcid.org/0000-0002-7312-4595"))
+
+(define (arxiv)
+  (link* "ArXiv" "https://arxiv.org/search/?searchtype=author&query=Weinberger%2C+L+H"))
+
+(define (ads)
+  (link* "ADS" "https://ui.adsabs.harvard.edu/search/q=author%3A%22Weinberger%2C%20Lewis%20H.%22"))
+
+(define (cc-by-sa)
+  (link* "CC BY-SA 4.0" "https://creativecommons.org/licenses/by-sa/4.0/"))
+
 ;;; Website layout ---------------------------------------------------
+
+(define (header-box)
+  `(div (@ (id "block"))
+        (p "+>----------------------------------------<+")
+        (p ,(link* "Home" "/index.html")--
+           ,(link* "About" "/about.html")--
+           ,(link* "Research" "/research.html")--
+           ,(link* "Miscellany" "/misc.html"))
+        (p "+>----------------------------------------<+")
+        (br)))
+
+(define (footer-box)
+  `(div (@ (id "block"))
+        (br)
+        (p "+>----------------------------------------<+")
+        (div ,(github)--
+             ,(bitbucket)--
+             ,(linkedin))
+        (div ,(orcid)--
+             ,(arxiv)--
+             ,(ads))
+        (p "© 2020 Lewis Weinberger "
+           ,(cc-by-sa)
+           (br)
+           "Built with "
+           ,(link* "Haunt" "http://haunt.dthompson.us")
+           " in "
+           ,(link* "Scheme" "https://www.gnu.org/software/guile/guile.html"))
+        (p "+>----------------------------------------<+")))
 
 (define default-theme
   (theme #:name
@@ -159,75 +161,16 @@
              (head (meta (@ (charset "utf-8")))
                    (meta (@ (name "viewport")
                             (content "width=device-width, initial-scale=1")))
-                   (title ,(string-append
-                             title
-                             " — "
-                             (site-title site)))
-                   ,(stylesheet "default")
-                   ,(external-stylesheet
-                      "https://www.w3schools.com/w3css/4/w3.css")
-                   ,(external-stylesheet
-                      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
-                   ,(external-stylesheet
-                      "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css")
-                   ,(external-stylesheet
-		     "https://fonts.googleapis.com/css?family=Raleway")
-		   (style "body, h1, h2, h3 {font-family: 'Raleway', Arial, sans-serif;}")
-                   (script
-                     "MathJax = { tex: {inlineMath: [['$', '$']]} };")
-                   (script
-                     (@ (id "MathJax-script")
-                        (src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"))))
-             (body (div (@ (id "container"))
-                        (header
-                          (div (@ (class "w3-container")
-                                  (id "block"))
-                               (div (@ (class "w3-panel w3-opacity"))
-                                    (div (@ (class "w3-bar w3-light-grey"))
-                                         ,(nav-button "Home" "/index.html")
-                                         ,(nav-button "About" "/about.html")
-                                         ,(nav-button
-                                            "Research"
-                                            "/research.html")
-                                         ,(nav-button
-                                            "Miscellany"
-                                            "/misc.html")))))
-                        (div (@ (class "w3-container body")
-                                (id "block"))
-                             ,body)
-                        (footer
-                          (div (@ (class "w3-container w3-center w3-xxlarge footer")
-                                  (id "block"))
-                               (div (@ (class "w3-show-inline-block"))
-				    (div (@ (class "w3-bar w3-mobile"))
-					 ,%github-button
-					 ,%bitbucket-button
-					 ,%linkedin-button)
-				    (div (@ (class "w3-bar w3-mobile"))
-					 ,%orcid-button
-					 ,%arxiv-button
-					 ,%ads-button))
-                               (p (@ (class "w3-small"))
-                                  "© 2019 Lewis Weinberger "
-                                  ,%cc-by-sa-button
-                                  (br)
-                                  "This website is built with "
-                                  ,(link* "Haunt" "http://haunt.dthompson.us")
-                                          ", a static site generator written in "
-                                  ,(link* "Guile Scheme"
-                                          "https://gnu.org/software/guile")
-                                  "."
-                                  (br)
-                                  "Powered by the "
-                                  ,(link* "w3.css"
-                                          "https://www.w3schools.com/w3css/default.asp")
-                                  " framework.")))))))
+                   (title ,(string-append title " — " (site-title site)))
+                   ,(stylesheet "default"))
+             (body (header ,(header-box))
+                   (div (@ (id "block")) ,body)
+                   (footer ,(footer-box)))))
          #:post-template
          (lambda (post)
-           `((h1 (@ (class "title")) ,(post-ref post 'title))
-             (div (@ (class "date"))
-                  ,(date->string (post-date post) "~B ~d, ~Y"))
-             (div (@ (class "post")) ,(post-sxml post))))
+           `((h1 ,(post-ref post 'title))
+             (div ,(date->string (post-date post) "~B ~d, ~Y"))
+             (div ,(post-sxml post))))
          #:collection-template
          (lambda (site title posts prefix)
            (define (post-uri post)
@@ -242,15 +185,14 @@
                                   "/"
                                   (site-post-slug site post)
                                   ".html")))
-                       `(div (@ (class "summary"))
-                             (h2 (a (@ (href ,uri)
-                                       (style "text-decoration: none;")
-                                       (class "w3-text-blue-gray"))
+                       `(div (h2 (a (@ (href ,uri)
+                                       (style "text-decoration: none;"))
                                     ,(post-ref post 'title)))
-                             (div (@ (class "date"))
-                                  ,(date->string (post-date post) "~B ~d, ~Y"))
-                             (div (@ (class "post")) ,(first-paragraph post))
-                             ,(link* "read more..." uri))))
+                             (div ,(date->string (post-date post) "~B ~d, ~Y"))
+                             (div ,(first-paragraph post))
+                                  ,(link* "read more..." uri)
+                                  (br)
+                                  (p (@ (style "text-align: center;")) "-->--<--"))))
                    posts)))))
 
 (define (static-page title file-name body)
@@ -265,13 +207,12 @@
 
 (define (sxml-identity . args) args)
 
-;; Put code in a nice blue box
+;; Code block
 (define (code-block . tree)
   (sxml-match
     tree
     ((pre (code ,source))
-     `(div (@ (class "w3-container w3-border w3-padding-16")
-	      (id "code"))
+     `(div (@ (id "code"))
            (pre (@ (style "overflow: auto")) (code ,source))))
     (,other other)))
 
