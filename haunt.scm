@@ -72,7 +72,7 @@
          ".")
       (br)
       (h2 "Contact Info")
-      (p "lewis.weinberger[at]ast.cam.ac.uk"))))
+      (p "lewis.weinberger [at] ast.cam.ac.uk"))))
 
 ;; Collection of miscellaneous posts
 (define %misc

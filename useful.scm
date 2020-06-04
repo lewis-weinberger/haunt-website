@@ -101,7 +101,7 @@
 ;;; Links ------------------------------------------------------------
 
 (define (github)
-  (link* "Github" "https://github.com/lewis-weinberger"))
+  (link* "GitHub" "https://github.com/lewis-weinberger"))
 
 (define (bitbucket)
   (link* "BitBucket" "https://bitbucket.org/lweinberger/"))
@@ -125,32 +125,29 @@
 
 (define (header-box)
   `(div (@ (id "block"))
-        (p "+>----------------------------------------<+")
-        (p ,(link* "Home" "/index.html")--
-           ,(link* "About" "/about.html")--
+        (p "+>---------------------------<+")
+        (p ,(link* "About" "/about.html")--
            ,(link* "Research" "/research.html")--
            ,(link* "Miscellany" "/misc.html"))
-        (p "+>----------------------------------------<+")
+        (p "+>---------------------------<+")
         (br)))
 
 (define (footer-box)
   `(div (@ (id "block"))
         (br)
-        (p "+>----------------------------------------<+")
+        (p "+>---------------------------<+")
         (div ,(github)--
-             ,(bitbucket)--
              ,(linkedin))
         (div ,(orcid)--
              ,(arxiv)--
              ,(ads))
-        (p "© 2020 Lewis Weinberger "
-           ,(cc-by-sa)
-           (br)
-           "Built with "
+        (p "© 2020 Lewis Weinberger")
+        (p ,(cc-by-sa))
+        (p "Built with "
            ,(link* "Haunt" "http://haunt.dthompson.us")
            " in "
            ,(link* "Scheme" "https://www.gnu.org/software/guile/guile.html"))
-        (p "+>----------------------------------------<+")))
+        (p "+>---------------------------<+")))
 
 (define default-theme
   (theme #:name
