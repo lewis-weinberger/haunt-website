@@ -25,54 +25,62 @@
 ;; Static "Home"
 (define home-page
   (static-page
-    "Home"
-    "index.html"
-    `(,(centered-image "images/mainframe_256x256.gif"))))
+   "Home"
+   "index.html"
+   `(,(centered-image "images/mainframe_256x256.gif"))))
 
 ;; Static "About" page
 (define about-page
   (static-page
-    "About"
-    "about.html"
-    `((h1 "About")
-      (p "This is the personal website of Lewis Weinberger."
-         " I am currently an astrophysics PhD student at the University of "
-         "Cambridge's "
-         ,(link* "Institute of Astronomy"
-                 "https://www.ast.cam.ac.uk/")
-         ". My research so far has focused on the "
-         "inter-galactic medium (IGM) — the stuff "
-         (i "in-between")
-         " galaxies — in particular how this medium evolved"
-         " alongside galaxies in the early Universe.")
-      (br)
-      (p " A lot of my research makes use of High "
-         "Performance Computing (HPC), running calculations on "
-         ,(link* "supercomputers"
-                "https://www.hpc.cam.ac.uk/")
-         ". Outside of my PhD work, I'm a computerphile — "
-         "I enjoy learning about and using programming languages "
-         "and paradigms beyond scientific computing. (Pronouns: "
-         (i "he, him, his")
-	 ").")
-      (br)
-      ,(centered-image "images/profile.png")
-      (br)
-      (p "This site was written in the LISP dialect Scheme (GNU Guile, version "
-         ,(version)
-         ") and built with the Haunt library (version "
-         ,%haunt-version
-         ") on "
-         ,(strftime "%c" (localtime (current-time)))
-         ". The source code can be found on "
-         ,(link* "GitHub"
-                "https://github.com/lewis-weinberger/haunt-website")
-         ". Under the hood it was heavily inspired by David Thompson's website "
-         ,(link* "dthompson.us" "https://dthompson.us/")
-         ".")
-      (br)
-      (h2 "Contact Info")
-      (p "lewis.weinberger [at] ast.cam.ac.uk"))))
+   "About"
+   "about.html"
+   `((h1 "About")
+     (p "This is the personal website of Lewis Weinberger."
+	" I am an operational researcher and data scientist. (Pronouns: "
+	(i "he, him, his")
+	").")
+     ,(centered-image "images/profile.png")
+     (p "Previously I was an astrophysics PhD student at the University of "
+	"Cambridge's "
+	,(link* "Institute of Astronomy"
+		"https://www.ast.cam.ac.uk/")
+	". My research focused on the "
+	"inter-galactic medium (IGM) — the stuff "
+	(i "in-between")
+	" galaxies — in particular how this medium evolved"
+	" alongside galaxies in the early Universe.")
+     (br)
+     (p " A lot of my work and research makes use of High "
+	"Performance Computing (HPC), running calculations on "
+	,(link* "supercomputers"
+		"https://www.hpc.cam.ac.uk/")
+	". Outside of work, I'm a computerphile — "
+	"I enjoy learning about and using programming languages "
+	"and paradigms beyond scientific computing. For example, this "
+	"site was written in the LISP dialect Scheme (GNU Guile, version "
+	,(version)
+	") and built with the Haunt library (version "
+	,%haunt-version
+	") on "
+	,(strftime "%c" (localtime (current-time)))
+	". The source code can be found on "
+	,(link* "GitHub"
+		"https://github.com/lewis-weinberger/haunt-website")
+	". Under the hood it was heavily inspired by David Thompson's website "
+	,(link* "dthompson.us" "https://dthompson.us/")
+	"."))))
+
+(define not-found 
+  (static-page
+   "404"
+   "404.html"
+   `((h1 "404 Page Not Found")
+     (p "Unfortunately the page you've tried to access doesn't exist!")
+     (br)
+     (h2 "Return "
+	 ,(link* "Home"
+		 "https://lewis-weinberger.github.io")
+	 "?"))))
 
 ;; Collection of miscellaneous posts
 (define %misc
@@ -96,5 +104,6 @@
             (blog #:theme default-theme #:collections %research)
             home-page
             about-page
-	        (static-directory "css")
+	    not-found
+	    (static-directory "css")
             (static-directory "images")))

@@ -91,12 +91,12 @@
 (define (research-posts posts)
   "Returns POSTS that contain research tag in reverse chronological order."
   (posts/reverse-chronological
-    (filter research? posts)))
+   (filter research? posts)))
 
 (define (misc-posts posts)
   "Returns POSTS that contain misc tag in reverse chronological order."
   (posts/reverse-chronological
-    (filter misc? posts)))
+   (filter misc? posts)))
 
 ;;; Links ------------------------------------------------------------
 
@@ -156,6 +156,8 @@
          (lambda (site title body)
            `((doctype "html")
              (head (meta (@ (charset "utf-8")))
+		   (meta (@ (name "description")
+			    (content "Lewis Weinberger's personal website")))
                    (meta (@ (name "viewport")
                             (content "width=device-width, initial-scale=1")))
                    (title ,(string-append title " — " (site-title site)))
@@ -172,33 +174,33 @@
          (lambda (site title posts prefix)
            (define (post-uri post)
              (string-append
-               "/"
-               (or prefix "")
-               (site-post-slug site post)
-               ".html"))
+	      "/"
+	      (or prefix "")
+	      (site-post-slug site post)
+	      ".html"))
            `((h1 ,title)
              ,(map (lambda (post)
                      (let ((uri (string-append
-                                  "/"
-                                  (site-post-slug site post)
-                                  ".html")))
+				 "/"
+				 (site-post-slug site post)
+				 ".html")))
                        `(div (h2 (a (@ (href ,uri)
                                        (style "text-decoration: none;"))
                                     ,(post-ref post 'title)))
                              (div ,(date->string (post-date post) "~B ~d, ~Y"))
                              (div ,(first-paragraph post))
-                                  ,(link* "read more..." uri)
-                                  (br)
-                                  (p (@ (style "text-align: center;")) "-->--<--"))))
+			     ,(link* "read more..." uri)
+			     (br)
+			     (p (@ (style "text-align: center;")) "-->--<--"))))
                    posts)))))
 
 (define (static-page title file-name body)
   "Create a static page with TITLE at html file FILENAME using page BODY."
   (lambda (site posts)
     (make-page
-      file-name
-      (with-layout default-theme site title body)
-      sxml->html)))
+     file-name
+     (with-layout default-theme site title body)
+     sxml->html)))
 
 ;;; Custom markdown reader --------------------------------------------------
 
@@ -207,25 +209,25 @@
 ;; Code block
 (define (code-block . tree)
   (sxml-match
-    tree
-    ((pre (code ,source))
-     `(div (@ (id "code"))
-           (pre (@ (style "overflow: auto")) (code ,source))))
-    (,other other)))
+   tree
+   ((pre (code ,source))
+    `(div (@ (id "code"))
+	  (pre (@ (style "overflow: auto")) (code ,source))))
+   (,other other)))
 
 ;; Convert hrefs to custom hoverable link
 (define (hover-link . tree)
   (sxml-match
-    tree
-    ((a (@ (href ,uri) unquote _) unquote name)
-     `(,(link* name uri)))))
+   tree
+   ((a (@ (href ,uri) unquote _) unquote name)
+    `(,(link* name uri)))))
 
 ;; Center all images
 (define (center-images . tree)
   (sxml-match
-    tree
-    ((img (@ (src ,uri) unquote _))
-     `(,(centered-image uri)))))
+   tree
+   ((img (@ (src ,uri) unquote _))
+    `(,(centered-image uri)))))
 
 (define %commonmark-rules
   `((pre unquote code-block)
@@ -239,11 +241,11 @@
 
 (define commonmark-reader*
   (make-reader
-    (make-file-extension-matcher "md")
-    (lambda (file)
-      (call-with-input-file
-        file
-        (lambda (port)
-          (values
-            (read-metadata-headers port)
-            (post-process-commonmark (commonmark->sxml port))))))))
+   (make-file-extension-matcher "md")
+   (lambda (file)
+     (call-with-input-file
+	 file
+       (lambda (port)
+	 (values
+	  (read-metadata-headers port)
+	  (post-process-commonmark (commonmark->sxml port))))))))
